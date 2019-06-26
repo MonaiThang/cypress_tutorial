@@ -4,6 +4,7 @@ const { Author, Book } = require('./sequelize');
 
 const app = express();
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}));
 
 app.get('/api/authors', (req, res) => {
   Author.findAll().then(authors => res.json(authors));
@@ -21,11 +22,17 @@ app.get('/', function (req, res) {
 });
 
 app.get('/login', function (req, res) {
-  res.render('login', { title: 'Login', message: 'Click to login' })
+  res.render('login', {title: 'Login', message: 'Enter a username and password'});
 });
 
 app.post('/login', function (req, res) {
-  res.redirect('/books');
+  username = req.body.username;
+  password = req.body.password;
+  if (username == 'foo' && password == 'bar') {
+    res.redirect('/books');
+  } else {
+    res.render('login', {title: 'Login', message: 'Username or password is invalid'});
+  }
 });
 
 app.get('/books', function (req, res) {
